@@ -1,5 +1,3 @@
-
-
 item = str(input("Item que deseja vender: "))
 cod  = int(input("Coloque o código do produto:"))
 desc = str(input("Descrição do produto:"))
@@ -11,11 +9,12 @@ ml = float(input("Porcentagem de margem de lucro: "))
 
 
 
-
 cfp = cf / 100
 cvp = cv / 100
 ivp = iv / 100
 mlp = ml / 100
+
+
 
 pv = cp / (1 - (cfp + cvp + ivp + mlp))
 A=(pv/pv)*100
@@ -33,17 +32,33 @@ I = cp * (cfp + cvp + ivp)
 
 pcp=(cp/pv)*100
 
-print(f"--------------------------------------------")
-print(f"DESCRIÇÕES |  VALORES |  PORCENTAGEM")
-print(f"preço de venda | {pv} | {A}")
-print(f"custo de aquisição | {cp} | {B}")
-print(f"receita bruta | {C} | {CP}")
-print(f"custo fixo | {D} | {cf}")
-print(f"valor de comissão | {E} | {cv}")
-print(f"imposto de venda | {F} | {iv}")
-print(f"outros custos são | {G} | {GP}")
-print(f"rentabilidade | {H} | {HP}")
-print(f"--------------------------------------------")
+preco_de_venda = "preço de venda"
+custo_de_aquisicao = "custo de aquisição"
+receita_bruta = "receita bruta"
+custo_fixo = "custo fixo"
+valor_de_comissao = "valor de comissão"
+imposto_de_venda = "imposto de venda"
+outros_custos = "outros custos"
+rentabilidade = "rentabilidade"
+print("\n")
+print("\n")
+print("\n")
+print("\n")
+print("\n")
+print("\n")
+def criartabela():
+    print("Descrição\t\tvalor\t\t%")
+    print(f"{preco_de_venda:<20}\t{pv:.2f}\t\t{A:.2f}")
+    print(f"{custo_de_aquisicao:<20}\t{cp:.2f}\t\t{cp/pv*100:.2f}")
+    print(f"{receita_bruta:<20}\t{pv:.2f}\t\t{100:.2f}")
+    print(f"{custo_fixo:<20}\t{cf:.2f}\t\t{cf:.2f}")
+    print(f"{valor_de_comissao:<20}\t{cv:.2f}\t\t{cv:.2f}")
+    print(f"{imposto_de_venda:<20}\t{iv:.2f}\t\t{iv:.2f}")
+    print(f"{outros_custos:<20}\t{cfp+cvp+ivp:.2f}\t\t{cf+cv+iv:.2f}")
+    print(f"{rentabilidade:<20}\t{pv - (cf+cv+iv):.2f}\t\t{(pv - (cf+cv+iv))/pv*100:.2f}")
+criartabela()
+
+
 
 if H > 0.2 * pv:
     print("O lucro é alto")
