@@ -104,19 +104,63 @@ elif opcao=="2":
     lista2 = []
 
     cursor.execute(f"select cp from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select cf from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select cv from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select iv from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select ml from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
 
-    lista2[0].remove('(' and ')')
+    
+    cursor.close()
+    conexao.close()
+
+    cp =  lista2[0][0]
+    cf =  lista2[1][0]
+    cv =  lista2[2][0]
+    iv =  lista2[3][0]
+    ml =  lista2[4][0]
+    
+    
+    cfp = cf / 100
+    cvp = cv / 100
+    ivp = iv / 100
+    mlp = ml / 100
+
+    pv = cp / (1 - (cfp + cvp + ivp + mlp))
+    A=(pv/pv)*100
+    B = (cp/pv) * 100
+    C = pv - cp
+    CP = (C/pv) * 100
+    D = cfp * pv
+    E = cvp * pv
+    F = ivp * pv
+    G = (cfp+cvp+ivp) * pv
+    GP = cf+cv+iv
+    H = C - G
+    HP = (H/pv) * 100
+    I = cp * (cfp + cvp + ivp)
+
+    pcp=(cp/pv)*100
+
+    preco_de_venda = ["preço de venda", pv, A]
+    custo_de_aquisicao = ["custo de aquisição", cp, B]
+    receita_bruta = ["receita bruta", pv, 100]
+    custo_fixo = ["custo fixo", cf, cf]
+    valor_de_comissao = ["valor de comissão", cv, cv]
+    imposto_de_venda = ["imposto de venda", iv, iv]
+    outros_custos = ["outros custos", cfp+cvp+ivp, GP]
+    rentabilidade = ["rentabilidade", pv - (cf+cv+iv), HP]
+
+    lista =[preco_de_venda, custo_de_aquisicao, receita_bruta, custo_fixo, valor_de_comissao, imposto_de_venda, outros_custos, rentabilidade]
+
+    hdr2 = ["DESCRIÇÃO", "VALOR", "%"]
+    print(tabulate(lista ,headers = hdr2, tablefmt='psql'))

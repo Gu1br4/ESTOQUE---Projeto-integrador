@@ -104,32 +104,30 @@ elif opcao=="2":
     lista2 = []
 
     cursor.execute(f"select cp from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select cf from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select cv from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select iv from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
     cursor.execute(f"select ml from estoque where COD_PROD = {x}")
-    resultado2 = cursor.fetchall()
+    resultado2 = cursor.fetchone()
     lista2.append(resultado2)
 
     
     cursor.close()
     conexao.close()
-    print (lista2)
-    print (f"{lista2}")
 
-    cp =  lista2[0] 
-    cf =  lista2[1]
-    cv =  lista2[2]
-    iv =  lista2[3]
-    ml =  lista2[4]
+    cp =  lista2[0][0]
+    cf =  lista2[1][0]
+    cv =  lista2[2][0]
+    iv =  lista2[3][0]
+    ml =  lista2[4][0]
     
     
     cfp = cf / 100
