@@ -164,3 +164,14 @@ elif opcao=="2":
 
     hdr2 = ["DESCRIÇÃO", "VALOR", "%"]
     print(tabulate(lista ,headers = hdr2, tablefmt='psql'))
+
+    if H > 0.2 * pv:
+        print("O lucro é alto")
+    elif 0.1 * pv <= H <= 0.2 * pv:
+        print("O lucro é médio")
+    elif 0 < H < 0.1 * pv:
+        print("O lucro é baixo")
+    elif H == 0:
+        print("Não há lucro nem prejuízo")
+    else:
+        print("Prejuízo")
