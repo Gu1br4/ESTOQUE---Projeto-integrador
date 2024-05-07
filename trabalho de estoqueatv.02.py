@@ -129,13 +129,17 @@ elif opcao=="2":
     iv =  lista2[3][0]
     ml =  lista2[4][0]
     
-    
     cfp = cf / 100
     cvp = cv / 100
     ivp = iv / 100
     mlp = ml / 100
 
+
     pv = cp / (1 - (cfp + cvp + ivp + mlp))
+    ivr = ivp*pv
+    cvr = cvp*pv
+    cfr = cfp*pv
+
     A=(pv/pv)*100
     B = (cp/pv) * 100
     C = pv - cp
@@ -151,14 +155,16 @@ elif opcao=="2":
 
     pcp=(cp/pv)*100
 
-    preco_de_venda = ["preço de venda", pv, A]
-    custo_de_aquisicao = ["custo de aquisição", cp, B]
-    receita_bruta = ["receita bruta", pv, 100]
-    custo_fixo = ["custo fixo", cf, cf]
-    valor_de_comissao = ["valor de comissão", cv, cv]
-    imposto_de_venda = ["imposto de venda", iv, iv]
-    outros_custos = ["outros custos", cfp+cvp+ivp, GP]
-    rentabilidade = ["rentabilidade", pv - (cf+cv+iv), HP]
+
+
+    preco_de_venda = ["preço de venda", round(pv,2), A]
+    custo_de_aquisicao = ["custo de aquisição", round(cp,2), B]
+    receita_bruta = ["receita bruta", round(C,2), CP]
+    custo_fixo = ["custo fixo", round(cfr,2), cf]
+    valor_de_comissao = ["valor de comissão", round(cvr,2), cv]
+    imposto_de_venda = ["imposto de venda", round(ivr,2), iv]
+    outros_custos = ["outros custos", round(G,2), GP]
+    rentabilidade = ["rentabilidade", round(H,2), HP]
 
     lista =[preco_de_venda, custo_de_aquisicao, receita_bruta, custo_fixo, valor_de_comissao, imposto_de_venda, outros_custos, rentabilidade]
 
