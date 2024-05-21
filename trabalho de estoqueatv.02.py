@@ -92,14 +92,15 @@ elif opcao=="2":
 
     cursor = conexao.cursor()
     
-    x = input("digite o codigo do produto: ")
-    cursor.execute(f"select * from estoque where COD_PROD = {x}")
+    cursor.execute(f"select * from estoque")
     resultado = cursor.fetchall()
  
 
     hdr = ["COD_PROD", "NOME_PROD", "DESC_PROD", "CP", "CF", "CV", "IV", "ML"]
     from tabulate import tabulate
     print(tabulate(resultado, headers= hdr, tablefmt='psql'))
+
+    x = input("digite o codigo do produto: ")
 
     lista2 = []
 
