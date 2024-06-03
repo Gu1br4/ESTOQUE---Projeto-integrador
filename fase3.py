@@ -1,21 +1,26 @@
+#instalar no cmd : tabulate, oracledb e numpy
 import getpass
 import oracledb
 from tabulate import tabulate
+import numpy as np
+from unidecode import unidecode
 
 def ins_produto():
-        codp = (input("Digite o codigo do produto"))
-        nomep = (input("Digite o nome do produto: "))
-        descp =  (input("Digite o descricao do produto: "))
-        cp = (input("Digite o custo do produto: "))
-        if cp == "0":
-            print("digite um valor diferente de 0: ")
-            cp = (input("Digite o codigo do produto: "))
-        cfp = (input("Digite a porcentagem do custo fixo do produto: "))
-        cvp = (input("Digite a porcentagem do comissao de venda do produto: "))
-        ivp = (input("Digite a porcentagem do imposto de venda do produto: "))
-        mlp = (input("Digite a porcentagem do margem de lucro de venda do produto: "))
-        cursor.execute(f"insert into estoque (COD_PROD, NOME_PROD, DESC_PROD, CP, CF, CV, IV, ML) values ({codp}, '{nomep}', '{descp}', {cp}, {cfp}, {cvp}, {ivp}, {mlp})")
-        print("Produto Adicionado!")
+    codp = input("Digite o código do produto: ")
+    nomep = input("Digite o nome do produto: ")
+    descp = input("Digite o descrição do produto: ")
+    descp = criptografar(descp)
+    cp = float(input("Digite o custo do produto: "))
+    if cp == 0:
+        print("Digite um valor diferente de 0: ")
+        cp = float(input("Digite o custo do produto: "))
+    cfp = float(input("Digite a porcentagem do custo fixo do produto: "))
+    cvp = float(input("Digite a porcentagem do comissão de venda do produto: "))
+    ivp = float(input("Digite a porcentagem do imposto de venda do produto: "))
+    mlp = float(input("Digite a porcentagem do margem de lucro de venda do produto: "))
+    cursor.execute(f"INSERT INTO estoque (COD_PROD, NOME_PROD, DESC_PROD, CP, CF, CV, IV, ML) VALUES ({codp}, '{nomep}', '{descp}', {cp}, {cfp}, {cvp}, {ivp}, {mlp})")
+    print("Produto Adicionado!")
+
 
     
 def alt_produto():
@@ -57,6 +62,92 @@ def conf_apg(apgp):
         menu()
     conexao.commit()
 
+
+alfabeto = {' ': 26, 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25}
+
+def criptografar(descricao):
+    palavra = f'{unidecode(descricao)}'.upper()
+    palavra_impar = False
+    if len(palavra) % 2 != 0:
+        palavra += "A"
+        palavra_impar = True
+
+    matriz_palavra_em_num = palavra_em_matriz(palavra)
+
+    chaveMatriz = np.array([[4, 3], [1, 2]])
+    criptografada = np.dot(chaveMatriz, matriz_palavra_em_num) % 26
+    palavra_criptografada = monta_palavra(criptografada, palavra_impar)
+
+    return palavra_criptografada
+
+def palavra_em_matriz(palavra):
+    letras = []
+    for letra in palavra:
+        if letra == ' ':
+            letras.append(0)
+        elif letra == 'Z':
+            letras.append(26)
+        else:
+            letras.append(alfabeto[letra])
+    matriz_palavra_em_num = np.array(letras)
+
+    if len(matriz_palavra_em_num) % 2 != 0:
+        matriz_palavra_em_num = np.append(matriz_palavra_em_num, [0]) 
+
+    matriz_palavra_em_num = matriz_palavra_em_num.reshape(-1, 2).T
+    return matriz_palavra_em_num
+
+
+def monta_palavra(matriz, palavra_impar):
+    palavra_formada = ''
+    for coluna in matriz.T:
+        for num in coluna:
+            if num == 0:
+                palavra_formada += ' '
+            else:
+                for chave, valor in alfabeto.items():
+                    if valor == num:
+                        palavra_formada += chave
+    if palavra_impar:
+        palavra_formada = palavra_formada[:-1]
+    return palavra_formada
+
+
+
+
+def decifrar(descricao):
+    palavra_criptografada = descricao.upper()
+
+    matriz_palavra_em_num = palavra_em_matriz(palavra_criptografada)
+    a, b, c, d = 4, 3, 1, 2
+    chaveMatrizInversa = np.array([[d, -b], [-c, a]])
+    det = (a * d) - (b * c)
+    det_inversas = {1: 1, 3: 9, 5: 21, 7: 15, 9: 3, 11: 19, 15: 7, 17: 23, 19: 11, 21: 5, 23: 17, 25: 25}
+    det_inv = det_inversas[det % 26]
+    chaveMatrizInversa = (chaveMatrizInversa * det_inv) % 26
+    matriz_palavra_em_num = np.dot(chaveMatrizInversa, matriz_palavra_em_num) % 26
+    palavra_decifrada = monta_palavra(matriz_palavra_em_num, len(palavra_criptografada) % 2 != 0)
+
+    return palavra_decifrada.strip()
+
+
+
+def listar_produtos():
+    cursor.execute("SELECT * FROM estoque")
+    resultados = cursor.fetchall()
+
+    hdr = ["COD_PROD", "NOME_PROD", "DESC_PROD", "CP", "CF", "CV", "IV", "ML"]
+    print(tabulate(resultados, headers=hdr, tablefmt='psql'))
+
+    for resultado in resultados:
+        descricao_criptografada = resultado[2]
+        descricao_descriptografada = descriptografar(descricao_criptografada)
+        resultado_com_descricao_descriptografada = resultado[:2] + (descricao_descriptografada,) + resultado[3:]
+        print(resultado_com_descricao_descriptografada)
+        # Continue com o restante do processamento, se necessário
+
+
+
 while True:
     print("-"*25)
     print("1. Inserir produto\n2. Alterar produtos \n3. Apagar produto \n4. Listar produtos\n5. Sair do sistema ")
@@ -89,16 +180,19 @@ while True:
         conexao.commit()
 
     elif opt == 4:  # Listar produtos
-        cursor.execute(f"select * from estoque")
+        cursor.execute("SELECT * FROM estoque")
         resultados = cursor.fetchall()
 
         hdr = ["COD_PROD", "NOME_PROD", "DESC_PROD", "CP", "CF", "CV", "IV", "ML"]
-        from tabulate import tabulate
         print(tabulate(resultados, headers=hdr, tablefmt='psql'))
 
         for resultado in resultados:
-            print(resultado)
-            cp, cf, cv, iv, ml = resultado[3:8]
+            descricao_criptografada = resultado[2]
+            descricao_decifrada = decifrar(descricao_criptografada)
+            resultado_com_descricao_decifrada = resultado[:2] + (descricao_decifrada,) + resultado[3:]
+            print(tabulate([resultado_com_descricao_decifrada], headers=hdr, tablefmt='psql'))
+
+            cp, cf, cv, iv, ml = resultado_com_descricao_decifrada[3:8]
             cfp = cf / 100
             cvp = cv / 100
             ivp = iv / 100
@@ -146,6 +240,7 @@ while True:
                     outros_custos, rentabilidade]
 
             hdr2 = ["DESCRIÇÃO", "VALOR", "%"]
+            
             print(tabulate(lista, headers=hdr2, tablefmt='psql'))
 
 
