@@ -17,7 +17,7 @@ def imp_calc(cp, cfp, cvp, ivp, mlp, descp):
             for produto in produtos:
                 
                 n = 1
-                print(f"Produto {n}")
+                print(f"Produto {n}: ")
                 n += 1
 
                 cfpp = cfp / 100
