@@ -8,13 +8,18 @@ from unidecode import unidecode
 
 alf = {' ': 0, 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10, 'K': 11, 'L': 12, 'M': 13, 'N': 14, 'O': 15, 'P': 16, 'Q': 17, 'R': 18, 'S': 19, 'T': 20, 'U': 21, 'V': 22, 'W': 23, 'X': 24, 'Y': 25, 'Z': 26}
 
-def imp_calc(cp, cfp, cvp, ivp, mlp):
+
+def imp_calc(cp, cfp, cvp, ivp, mlp, descp):
               
             cursor.execute("SELECT * FROM estoque")
             produtos = cursor.fetchall()
 
             for produto in produtos:
-        
+                
+                n = 1
+                print(f"Produto {n}")
+                n += 1
+
                 cfpp = cfp / 100
                 cvpp = cvp / 100
                 ivpp = ivp / 100
@@ -101,7 +106,7 @@ def ins_produto():
     print("Produto Adicionado!")
     conexao.commit()
 
-    return cp, cfp, cvp, ivp, mlp
+    return cp, cfp, cvp, ivp, mlp, descp
     
 
 def alt_produto():
@@ -219,7 +224,7 @@ while True:
     opt = int(input("O que deseja fazer: "))
 
     if opt == 1:  # Inserir produto
-      cp, cfp, cvp, ivp, mlp = ins_produto()
+      cp, cfp, cvp, ivp, mlp, descp = ins_produto()
 
     elif opt == 2:  # Alterar produto
         alt_produto()
@@ -228,7 +233,7 @@ while True:
         sel_apg_prod()
 
     elif opt == 4:  # Listar produtos
-        imp_calc(cp, cfp, cvp, ivp, mlp)
+        imp_calc(cp, cfp, cvp, ivp, mlp, descp)
             
     elif opt == 5:  # Fechar programa
         cursor.close()
